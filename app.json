@@ -1,15 +1,18 @@
 {
   "expo": {
-    "name": "pocket-llm",
-    "slug": "pocket-llm",
+    "name": "EdgeMind Lab",
+    "slug": "edgemind-lab",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "scheme": "edgemindlab",
+    "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.deepcoomer.edgemindlab"
     },
     "android": {
+      "package": "com.deepcoomer.edgemindlab",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -20,6 +23,27 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-build-properties",
+      [
+        "llama.rn",
+        {
+          "enableEntitlements": true
+        }
+      ],
+      "expo-router",
+      "./plugins/withProcessTextIntent.js",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "EdgeMind Lab needs access to your photos to scan text from an image.",
+          "cameraPermission": "EdgeMind Lab needs camera access to scan text from a photo."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
     }
   }
 }

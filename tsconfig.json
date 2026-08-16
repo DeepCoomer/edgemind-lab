@@ -1,6 +1,21 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true
-  }
+    "strict": true,
+    "paths": {
+      // whisper.rn's package.json "exports" map has no root "." entry, and
+      // under this project's customConditions:["react-native"], resolving
+      // any subpath (e.g. "whisper.rn/index") lands on its raw .ts source,
+      // which isn't standalone typecheck-clean outside their own build.
+      // This redirects only tsc's resolution to the prebuilt .d.ts — Metro
+      // doesn't read tsconfig paths, so runtime bundling is unaffected.
+      "whisper.rn/index": ["./node_modules/whisper.rn/lib/typescript/index.d.ts"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+  ]
 }
