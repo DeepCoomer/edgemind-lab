@@ -3,6 +3,7 @@ import { router, usePathname } from "expo-router";
 import { DrawerContentScrollView, useDrawerStatus, type DrawerContentComponentProps } from "expo-router/drawer";
 import { useEffect, useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useThemeColors } from "../hooks/useThemeColors";
 import { deleteConversation, listConversations, type Conversation } from "../lib/chatStore";
 import { startNewChat } from "../lib/newChat";
@@ -20,6 +21,7 @@ function timeAgo(ts: number): string {
 export default function ChatSidebar(props: DrawerContentComponentProps) {
   const colors = useThemeColors();
   const styles = createStyles(colors);
+  const insets = useSafeAreaInsets();
   const pathname = usePathname();
   const drawerStatus = useDrawerStatus();
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -52,7 +54,11 @@ export default function ChatSidebar(props: DrawerContentComponentProps) {
   }
 
   return (
-    <DrawerContentScrollView {...props} style={styles.container} contentContainerStyle={styles.content}>
+    <DrawerContentScrollView
+      {...props}
+      style={styles.container}
+      contentContainerStyle={[styles.content, { paddingTop: insets.top + 8 }]}
+    >
       <Text style={styles.appName}>EdgeMind Lab</Text>
 
       <Pressable style={styles.newChatButton} onPress={() => startNewChat()}>
