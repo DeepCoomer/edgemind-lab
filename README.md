@@ -67,6 +67,14 @@ The download link always points at whatever the newest release is — no need to
       <sub>Launch splash screen</sub>
     </td>
   </tr>
+  <tr>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/drawer.png" width="260" alt="Navigation drawer with chat history, Lab, and Models"><br>
+      <sub>Drawer — chat history, Lab, Models</sub>
+    </td>
+    <td></td>
+    <td></td>
+  </tr>
 </table>
 
 ## Features
