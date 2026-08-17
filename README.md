@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/icon.png" width="96" alt="EdgeMind Lab icon">
+</p>
+
 # EdgeMind Lab
 
 An offline-first Android app for running small LLMs entirely on-device — chat, vision,
@@ -52,7 +56,10 @@ the [Releases page](https://github.com/DeepCoomer/edgemind-lab/releases/latest).
       <img src="docs/screenshots/rag-chat.png" width="260" alt="Chat answering from an attached source"><br>
       <sub>Chat answering from an attached source</sub>
     </td>
-    <td></td>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/splash.png" width="260" alt="Splash screen with the EdgeMind Lab logo on a white background"><br>
+      <sub>Launch splash screen</sub>
+    </td>
   </tr>
 </table>
 
