@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { File, type DownloadTask } from "expo-file-system";
+import { File, FileMode, type DownloadTask } from "expo-file-system";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, Pressable, SectionList, StyleSheet, Text, View } from "react-native";
@@ -214,7 +214,16 @@ export default function ModelListScreen({
       // via the Downloads/Recent provider resolve to an opaque content:// URI
       // with no real filename embedded, so extension-sniffing false-positives
       // on real .gguf picks. Check the actual GGUF magic bytes instead.
-      const header = new Uint8Array(await file.slice(0, 4).arrayBuffer());
+      // Use a bounded FileHandle read, not file.slice()/arrayBuffer() — slice()
+      // reads the ENTIRE file into memory first (OOM on multi-GB model files)
+      // before slicing in JS.
+      const handle = file.open(FileMode.ReadOnly);
+      let header: Uint8Array;
+      try {
+        header = handle.readBytes(4);
+      } finally {
+        handle.close();
+      }
       const isGguf = header[0] === 0x47 && header[1] === 0x47 && header[2] === 0x55 && header[3] === 0x46; // "GGUF"
       if (!isGguf) {
         Alert.alert("Not a .gguf file", "The picked file doesn't look like a GGUF model file.");
