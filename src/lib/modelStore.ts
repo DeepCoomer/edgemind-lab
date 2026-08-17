@@ -1,4 +1,5 @@
 import { Directory, File, Paths, type DownloadTask } from "expo-file-system";
+import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
 import { MODEL_CATALOG } from "../constants/models";
 import { EMBEDDING_MODEL } from "../constants/embeddingModel";
 import { WHISPER_MODEL } from "../constants/whisperModel";
@@ -57,18 +58,32 @@ export function startDownload(
   const destination = localFileFor(model.filename);
   if (destination.exists) destination.delete();
 
+  // The native download (OkHttp, in-process) has no foreground service or
+  // wake lock behind it, so on many Android devices the OS freezes it soon
+  // after the screen turns off. Keeping the screen on for the duration of
+  // the download is a cheap way to avoid that for the common case — it
+  // doesn't help if the user manually locks the phone, but does stop the
+  // normal screen-timeout from killing a multi-hundred-MB download. Each
+  // call gets its own tag so concurrent downloads (e.g. a vision model's
+  // main + mmproj files) don't deactivate each other's lock early.
+  const keepAwakeTag = `model-download-${model.filename}-${Date.now()}`;
+  activateKeepAwakeAsync(keepAwakeTag);
+
   const task = File.createDownloadTask(model.downloadUrl, destination, {
     onProgress: ({ bytesWritten, totalBytes }) => {
       if (totalBytes > 0) onProgress(bytesWritten / totalBytes);
     },
   });
-  const promise = task.downloadAsync().catch((error) => {
-    // On Android, a cancelled or failed download can leave a partial file at
-    // the destination — clean it up so it never gets picked up elsewhere as
-    // a "downloaded" model.
-    if (destination.exists) destination.delete();
-    throw error;
-  });
+  const promise = task
+    .downloadAsync()
+    .catch((error) => {
+      // On Android, a cancelled or failed download can leave a partial file at
+      // the destination — clean it up so it never gets picked up elsewhere as
+      // a "downloaded" model.
+      if (destination.exists) destination.delete();
+      throw error;
+    })
+    .finally(() => deactivateKeepAwake(keepAwakeTag));
   return { task, promise };
 }
 
