@@ -8,6 +8,23 @@ old, low-RAM phones that can't handle typical on-device AI apps.
 Everything happens locally: model inference, speech-to-text, text-to-speech, and OCR all
 run on the device's own CPU. Nothing is uploaded anywhere.
 
+## Download
+
+Prebuilt signed APKs are published on the [Releases page](https://github.com/DeepCoomer/edgemind-lab/releases/latest).
+
+> [!WARNING]
+> This is a personal side project, not a Play Store app — it's signed with a
+> self-generated key, not reviewed by Google, and Android will warn you about
+> installing an app from an unknown source. Only install it if you trust the
+> source (i.e., you got it from this repo's Releases page) and understand
+> what that means. Verify the download's SHA-256 checksum against the value
+> listed on the release page before installing if you want extra assurance.
+>
+> The app needs real device storage and RAM for downloaded models (several
+> hundred MB to a few GB each) and runs inference on the CPU — expect it to
+> be slow and to drain battery on older/low-RAM phones, which is the exact
+> hardware it targets.
+
 ## Features
 
 - **Chat** — conversations with any downloaded GGUF model, streaming responses, per-chat
