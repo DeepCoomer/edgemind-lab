@@ -26,6 +26,36 @@ the [Releases page](https://github.com/DeepCoomer/edgemind-lab/releases/latest).
 > be slow and to drain battery on older/low-RAM phones, which is the exact
 > hardware it targets.
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/models.png" width="260" alt="Models screen showing the curated catalog with RAM compatibility badges"><br>
+      <sub>Curated models with per-device RAM compatibility hints</sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/chat.png" width="260" alt="Chat screen with a multi-turn conversation"><br>
+      <sub>Chat, with TTS and voice input</sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/lab.png" width="260" alt="Lab screen listing Quick Actions, Scan Text, Sources, Live Tuning, and Model Compare"><br>
+      <sub>Lab — on-device AI experiments</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/sources.png" width="260" alt="Sources screen with an indexed PDF source"><br>
+      <sub>Sources — reference text/PDFs for chat</sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/rag-chat.png" width="260" alt="Chat answering from an attached source"><br>
+      <sub>Chat answering from an attached source</sub>
+    </td>
+    <td></td>
+  </tr>
+</table>
+
 ## Features
 
 - **Chat** — conversations with any downloaded GGUF model, streaming responses, per-chat
