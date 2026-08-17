@@ -14,8 +14,14 @@ run on the device's own CPU. Nothing is uploaded anywhere.
 
 ## Download
 
-**Android only, for now** — there's no iOS build. Prebuilt signed APKs are published on
-the [Releases page](https://github.com/DeepCoomer/edgemind-lab/releases/latest).
+**Android only, for now** — there's no iOS build.
+
+| | |
+|---|---|
+| **Latest APK** | [⬇️ Download app-release.apk](https://github.com/DeepCoomer/edgemind-lab/releases/latest/download/app-release.apk) |
+| **Release notes / changelog / checksum** | [Releases page](https://github.com/DeepCoomer/edgemind-lab/releases/latest) |
+
+The download link always points at whatever the newest release is — no need to hunt through version numbers.
 
 > [!WARNING]
 > This is a personal side project, not a Play Store app — it's signed with a
