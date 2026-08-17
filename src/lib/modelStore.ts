@@ -133,16 +133,15 @@ export function deleteModelFile(path: string) {
  * Copies a manually-imported .gguf file into modelsDir so it's picked up by
  * listDownloadedModels() like any other model, instead of only living as
  * transient screen state pointing at wherever the picker returned it from.
+ *
+ * displayName should come from the picker's own metadata (e.g.
+ * expo-document-picker's DocumentPickerAsset.name), not source.name — on
+ * Android, source.name is reconstructed by parsing the picked content://
+ * URI, which never contains a real filename for most SAF providers.
  */
-export function importModelFile(source: File): File {
+export function importModelFile(source: File, displayName: string): File {
   ensureModelsDir();
-  // Files picked via Android's Storage Access Framework often resolve to an
-  // opaque content:// URI with no real filename embedded (e.g. the Downloads
-  // provider hands back something like ".../document/141") — source.name is
-  // derived from that URI, so it can't be trusted to already end in .gguf.
-  // Without this, the copy could land in modelsDir under a name that
-  // listDownloadedModels()'s ".gguf" filter would silently never pick up.
-  const safeName = /\.gguf$/i.test(source.name) ? source.name : `imported-${Date.now()}.gguf`;
+  const safeName = /\.gguf$/i.test(displayName) ? displayName : `${displayName}.gguf`;
   const destination = localFileFor(safeName);
   if (destination.exists) destination.delete();
   source.copySync(destination);

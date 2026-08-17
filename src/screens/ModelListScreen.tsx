@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import * as DocumentPicker from "expo-document-picker";
 import { File, FileMode, type DownloadTask } from "expo-file-system";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -207,16 +208,19 @@ export default function ModelListScreen({
 
   async function handleImport() {
     try {
-      const result = await File.pickFileAsync({ multipleFiles: false });
-      if (result.canceled || !result.result) return;
-      const file = result.result;
-      // Don't trust file.extension/file.name here — on Android, files picked
-      // via the Downloads/Recent provider resolve to an opaque content:// URI
-      // with no real filename embedded, so extension-sniffing false-positives
-      // on real .gguf picks. Check the actual GGUF magic bytes instead.
-      // Use a bounded FileHandle read, not file.slice()/arrayBuffer() — slice()
-      // reads the ENTIRE file into memory first (OOM on multi-GB model files)
-      // before slicing in JS.
+      // expo-document-picker, not expo-file-system's File.pickFileAsync — the
+      // latter reconstructs a name/extension by parsing the picked content://
+      // URI, which never contains a real filename for most Android SAF
+      // providers (e.g. the Downloads provider), so it's always empty. See
+      // docImport.ts, which hit and documented the same issue.
+      const picked = await DocumentPicker.getDocumentAsync({ type: "*/*", copyToCacheDirectory: false });
+      if (picked.canceled || picked.assets.length === 0) return;
+      const asset = picked.assets[0];
+      const file = new File(asset.uri);
+      // Check the actual GGUF magic bytes rather than trusting the display
+      // name's extension. Uses a bounded FileHandle read, not
+      // file.slice()/arrayBuffer() — slice() reads the ENTIRE file into
+      // memory first (OOM on multi-GB model files) before slicing in JS.
       const handle = file.open(FileMode.ReadOnly);
       let header: Uint8Array;
       try {
@@ -226,10 +230,10 @@ export default function ModelListScreen({
       }
       const isGguf = header[0] === 0x47 && header[1] === 0x47 && header[2] === 0x55 && header[3] === 0x46; // "GGUF"
       if (!isGguf) {
-        Alert.alert("Not a .gguf file", "The picked file doesn't look like a GGUF model file.");
+        Alert.alert("Not a .gguf file", `"${asset.name}" doesn't look like a GGUF model file.`);
         return;
       }
-      importModelFile(file);
+      importModelFile(file, asset.name);
       refreshOtherModels();
     } catch (error: any) {
       Alert.alert("Import failed", String(error?.message ?? error));
