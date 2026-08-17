@@ -136,7 +136,14 @@ export function deleteModelFile(path: string) {
  */
 export function importModelFile(source: File): File {
   ensureModelsDir();
-  const destination = localFileFor(source.name);
+  // Files picked via Android's Storage Access Framework often resolve to an
+  // opaque content:// URI with no real filename embedded (e.g. the Downloads
+  // provider hands back something like ".../document/141") — source.name is
+  // derived from that URI, so it can't be trusted to already end in .gguf.
+  // Without this, the copy could land in modelsDir under a name that
+  // listDownloadedModels()'s ".gguf" filter would silently never pick up.
+  const safeName = /\.gguf$/i.test(source.name) ? source.name : `imported-${Date.now()}.gguf`;
+  const destination = localFileFor(safeName);
   if (destination.exists) destination.delete();
   source.copySync(destination);
   return destination;

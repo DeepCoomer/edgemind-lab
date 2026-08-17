@@ -10,7 +10,8 @@ run on the device's own CPU. Nothing is uploaded anywhere.
 
 ## Download
 
-Prebuilt signed APKs are published on the [Releases page](https://github.com/DeepCoomer/edgemind-lab/releases/latest).
+**Android only, for now** — there's no iOS build. Prebuilt signed APKs are published on
+the [Releases page](https://github.com/DeepCoomer/edgemind-lab/releases/latest).
 
 > [!WARNING]
 > This is a personal side project, not a Play Store app — it's signed with a
@@ -95,4 +96,5 @@ The signed APK is written to `android/app/build/outputs/apk/release/app-release.
 ## Status
 
 Personal-use project — built for running on old/low-spec Android hardware, not
-distributed via the Play Store. See [LICENSE](LICENSE) (MIT).
+distributed via the Play Store. Android only; no iOS build exists yet. See
+[LICENSE](LICENSE) (MIT).

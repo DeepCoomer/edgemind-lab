@@ -210,8 +210,14 @@ export default function ModelListScreen({
       const result = await File.pickFileAsync({ multipleFiles: false });
       if (result.canceled || !result.result) return;
       const file = result.result;
-      if (file.extension?.toLowerCase() !== ".gguf") {
-        Alert.alert("Not a .gguf file", `Picked "${file.name}" — EdgeMind Lab only runs GGUF models.`);
+      // Don't trust file.extension/file.name here — on Android, files picked
+      // via the Downloads/Recent provider resolve to an opaque content:// URI
+      // with no real filename embedded, so extension-sniffing false-positives
+      // on real .gguf picks. Check the actual GGUF magic bytes instead.
+      const header = new Uint8Array(await file.slice(0, 4).arrayBuffer());
+      const isGguf = header[0] === 0x47 && header[1] === 0x47 && header[2] === 0x55 && header[3] === 0x46; // "GGUF"
+      if (!isGguf) {
+        Alert.alert("Not a .gguf file", "The picked file doesn't look like a GGUF model file.");
         return;
       }
       importModelFile(file);
